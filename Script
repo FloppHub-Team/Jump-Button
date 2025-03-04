@@ -9,13 +9,13 @@ local function createButton()
 
     button.Size = UDim2.new(0, 150, 0, 75)
     button.Position = UDim2.new(1, -160, 1, -85)
-    button.Text = "Saltar"
+    button.Text = "Jump"
     button.BackgroundColor3 = Color3.new(0, 0, 0)
     button.TextColor3 = Color3.new(1, 1, 1)
     button.TextScaled = true
 
     local isJumping = false
-    local jumpDelay = 0.5
+    local jumpDelay = 0
 
     local function makeCharacterJump()
         local character = player.Character
