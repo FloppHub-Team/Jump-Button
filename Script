@@ -1,0 +1,87 @@
+local player = game.Players.LocalPlayer
+
+local function createButton()
+    local screenGui = Instance.new("ScreenGui")
+    local button = Instance.new("TextButton")
+
+    screenGui.Parent = player:WaitForChild("PlayerGui")
+    button.Parent = screenGui
+
+    button.Size = UDim2.new(0, 150, 0, 75)
+    button.Position = UDim2.new(1, -160, 1, -85)
+    button.Text = "Saltar"
+    button.BackgroundColor3 = Color3.new(0, 0, 0)
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.TextScaled = true
+
+    local isJumping = false
+    local jumpDelay = 0.5
+
+    local function makeCharacterJump()
+        local character = player.Character
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid and humanoid:GetState() ~= Enum.HumanoidStateType.Freefall then
+                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end
+    end
+
+    local function startInfiniteJump()
+        isJumping = true
+        while isJumping do
+            makeCharacterJump()
+            wait(jumpDelay)
+        end
+    end
+
+    button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            isJumping = true
+            startInfiniteJump()
+        end
+    end)
+
+    button.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            isJumping = false
+        end
+    end)
+
+    local dragging = false
+    local dragStart, startPos
+
+    local function updateTouch(input)
+        local touch = input:GetTouches()[1]
+        if touch then
+            local delta = touch.Position - dragStart
+            button.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end
+
+    button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = button.Position
+        end
+    end)
+
+    button.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            updateTouch(input)
+        end
+    end)
+
+    button.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
+end
+
+createButton()
+
+player.CharacterAdded:Connect(function()
+    createButton()
+end)
