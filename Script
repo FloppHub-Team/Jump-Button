@@ -21,7 +21,7 @@ local function createButton()
         local character = player.Character
         if character then
             local humanoid = character:FindFirstChild("Humanoid")
-            if humanoid and humanoid:GetState() ~= Enum.HumanoidStateType.Freefall then
+            if humanoid then
                 humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
             end
         end
